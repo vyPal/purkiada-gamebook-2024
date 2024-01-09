@@ -50,7 +50,7 @@ export function LoginForm() {
       // Redirect the user to the page that displays the text based on the checkpoint
       router.push(`/checkpoint/${data.checkpoint}`)
     } else {
-      // Handle error
+      
     }
   }
 
