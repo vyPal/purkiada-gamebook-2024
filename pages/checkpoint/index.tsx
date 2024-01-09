@@ -1,3 +1,4 @@
+"use client";
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/router'
 
@@ -6,6 +7,9 @@ import { useState } from 'react';
  
 export default function Page() {
   const router = useRouter()
+  if (typeof window === 'undefined' || sessionStorage === undefined) {
+    return;
+  }
   const username = sessionStorage.getItem("username");
   const password = sessionStorage.getItem("password");
 

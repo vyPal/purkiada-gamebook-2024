@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/router'
@@ -68,6 +68,9 @@ export default function Page() {
   const router = useRouter()
   const [verified, setVerified] = useState(false);
   const [cheater, setCheater] = useState(false);
+  if (typeof window === 'undefined' || sessionStorage === undefined) {
+    return;
+  }
   const username = sessionStorage.getItem("username");
   const password = sessionStorage.getItem("password");
   let slug = router.query.slug;
