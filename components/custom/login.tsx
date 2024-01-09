@@ -47,6 +47,8 @@ export function LoginForm() {
   
     if (response.ok) {
       const data = await response.json()
+      sessionStorage.setItem("username", values.username);
+      sessionStorage.setItem("password", values.password);
       // Redirect the user to the page that displays the text based on the checkpoint
       router.push(`/checkpoint/${data.checkpoint}`)
     } else {

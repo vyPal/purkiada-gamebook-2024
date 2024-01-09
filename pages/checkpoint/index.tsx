@@ -6,6 +6,8 @@ import { useState } from 'react';
  
 export default function Page() {
   const router = useRouter()
+  const username = sessionStorage.getItem("username");
+  const password = sessionStorage.getItem("password");
 
   function tryProgress(ncp: string) {
     fetch('/api/progress', {
@@ -14,8 +16,8 @@ export default function Page() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        username: "test",
-        password: "test",
+        username: username,
+        password: password,
         ncp: ncp
       }),
     })
