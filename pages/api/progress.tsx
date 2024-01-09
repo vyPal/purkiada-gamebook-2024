@@ -8,7 +8,7 @@ const possibleProgress : {[key: string]:string[]} = {
   "D": ["A"]
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const { username, password, ncp } = req.body
 
   try {
