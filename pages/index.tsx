@@ -1,13 +1,10 @@
 import React from "react";
 import "../app/globals.css";
-import Link from "next/link";
-import { Button } from "@/components/ui/button"
 import { motion } from 'framer-motion';
 import { LoginForm } from "@/components/custom/login";
 
 export default class HomePage extends React.Component {
   state = {
-    loginPage: false,
     accessGranted: false
   };
 
