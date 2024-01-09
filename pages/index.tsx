@@ -5,7 +5,8 @@ import { LoginForm } from "@/components/custom/login";
 
 export default class HomePage extends React.Component {
   state = {
-    accessGranted: false
+    accessGranted: false,
+    cheating: false
   };
 
   constructor(props: React.PropsWithChildren) {
@@ -15,7 +16,7 @@ export default class HomePage extends React.Component {
   }
 
   componentDidMount() {
-    const targetDate = new Date("2023-21-01"); // TODO změnit datum
+    const targetDate = new Date("2024-02-27T14:12:00+01:00"); // TODO nastavit správný čas
     const currentDate = new Date();
 
     if (currentDate >= targetDate) {
@@ -34,7 +35,7 @@ export default class HomePage extends React.Component {
         konamiCodePosition++;
 
         if (konamiCodePosition === konamiCode.length) {
-          this.setState({ accessGranted: true });
+          this.setState({ accessGranted: true, cheating: true });
           sessionStorage.setItem("imanok", "true");
           konamiCodePosition = 0;
         }
@@ -76,6 +77,11 @@ export default class HomePage extends React.Component {
           transition={{ duration: 1 }}
         >
           <LoginForm />
+          {this.state.cheating && (
+            <div>
+              Jseš kokot podvádějící
+            </div>
+          )}
         </motion.div>
       </div>
     );

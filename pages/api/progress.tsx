@@ -19,23 +19,23 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
       let history = user.history;
       if (ncp !== undefined) {
         if (ncp == "") {
-          res.status(200).json({ checkpoint: checkpoint })
+          return res.status(200).json({ checkpoint: checkpoint })
         }
         if (possibleProgress[checkpoint].includes(ncp)) {
           checkpoint = ncp;
           history.push(ncp);
         } else {
-          res.status(400).json({ message: 'It is not possible to progress to '+ncp+' from '+checkpoint+'.', checkpoint: checkpoint })
+          return res.status(400).json({ message: 'It is not possible to progress to '+ncp+' from '+checkpoint+'.', checkpoint: checkpoint })
         }
       } else {
-        res.status(200).json({ checkpoint: checkpoint })
+        return res.status(200).json({ checkpoint: checkpoint })
       }
       await sql`UPDATE users SET checkpoint = ${checkpoint}, history = ${JSON.stringify(history)} WHERE username = ${username}`
-      res.status(200).json({ checkpoint: checkpoint })
+      return res.status(200).json({ checkpoint: checkpoint })
     } else {
-      res.status(401).json({ message: 'Invalid username or password' })
+      return res.status(401).json({ message: 'Invalid username or password' })
     }
   } catch (err) {
-    res.status(500).json({ message: 'An error occurred: '+err })
+    return res.status(500).json({ message: 'An error occurred: '+err })
   }
 }
