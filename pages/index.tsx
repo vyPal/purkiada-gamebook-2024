@@ -79,7 +79,7 @@ export default class HomePage extends React.Component {
           <LoginForm />
           {this.state.cheating && (
             <div>
-              Jseš kokot podvádějící
+              Code entered
             </div>
           )}
         </motion.div>
