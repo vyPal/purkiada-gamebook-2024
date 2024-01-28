@@ -4,12 +4,30 @@ import { motion } from 'framer-motion';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+import ReactFlow, {
+  Controls,
+  Background,
+  applyNodeChanges,
+  applyEdgeChanges,
+  Node,
+  Edge,
+} from 'reactflow';
+ 
+import 'reactflow/dist/style.css';
+ 
+const initialNodes: Node[] = [
+  { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
+  { id: '2', position: { x: 0, y: 100 }, data: { label: '2' } },
+];
+const initialEdges: Edge[] = [{ id: 'e1-2', source: '1', target: '2', label: 'e1-2'}];
+
 interface ButtonData {
   text: string;
   checkpoint: string;
 }
 
 interface Checkpoint {
+  name: string;
   text: string;
   buttons: ButtonData[];
 }
@@ -22,7 +40,15 @@ interface State {
   newCheckpointName: string;
   newCheckpointText: string;
   newButtons: ButtonData[];
+  nds: Node[];
+  eds: Edge[];
 }
+
+type QueueItem = {
+  name: string;
+  depth: number;
+  text: string;
+};
 
 export default class DesignerPage extends React.Component {
   state: State = {
@@ -33,13 +59,17 @@ export default class DesignerPage extends React.Component {
     newCheckpointName: "",
     newCheckpointText: "",
     newButtons: [{ text: "", checkpoint: "" }],
+    nds: initialNodes,
+    eds: initialEdges,
   };
 
   constructor(props: React.PropsWithChildren) {
     super(props);
-    this.update = this.update.bind(this);
     this.handleCheckpointsChange = this.handleCheckpointsChange.bind(this);
     this.handlePossibleProgressChange = this.handlePossibleProgressChange.bind(this);
+    this.generateNodesAndEdges = this.generateNodesAndEdges.bind(this);
+    this.onNodesChange = this.onNodesChange.bind(this);
+    this.onEdgesChange = this.onEdgesChange.bind(this);
   }
 
   handleButtonChange = (event: ChangeEvent<HTMLInputElement>, index: number) => {
@@ -71,30 +101,43 @@ export default class DesignerPage extends React.Component {
 
     const { newCheckpointName, newCheckpointText, newButtons } = this.state;
 
+    // Create a deep copy of newButtons
+    const copiedButtons = newButtons.map(button => ({ ...button }));
+
     const newCheckpoint: Checkpoint = {
       text: newCheckpointText,
-      buttons: newButtons,
+      buttons: copiedButtons,
+      name: newCheckpointName,
     };
 
-    const newPossibleProgress = newButtons.map(button => button.checkpoint);
+    const newPossibleProgress = copiedButtons.map(button => button.checkpoint);
 
     this.setState((prevState: State) => ({
       checkpoints: { ...prevState.checkpoints, [newCheckpointName]: newCheckpoint },
       possibleProgress: { ...prevState.possibleProgress, [newCheckpointName]: newPossibleProgress },
-    }), this.update);
+      // Reset form
+      newCheckpointName: "",
+      newCheckpointText: "",
+      newButtons: [{ text: "", checkpoint: "" }],
+    }));
   };
 
-  update() {
-    this.setState({
-      checkpointsText: JSON.stringify(this.state.checkpoints),
-      possibleProgressText: JSON.stringify(this.state.possibleProgress),
-    });
-  }
-
   handleCheckpointsChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
+    const newCheckpoints = JSON.parse(event.target.value);
+    let newPossibleProgress = this.state.possibleProgress;
+
+    if (Object.keys(newPossibleProgress).length === 0 && newCheckpoints) {
+      newPossibleProgress = Object.keys(newCheckpoints).reduce((acc, checkpointName) => {
+        const checkpoint = newCheckpoints[checkpointName];
+        acc[checkpointName] = checkpoint.buttons.map((button: ButtonData) => button.checkpoint);
+        return acc;
+      }, {} as { [key: string]: string[] });
+    }
+
     this.setState({
-      checkpoints: JSON.parse(event.target.value),
+      checkpoints: newCheckpoints,
       checkpointsText: event.target.value,
+      possibleProgress: newPossibleProgress,
     });
   }
 
@@ -105,7 +148,69 @@ export default class DesignerPage extends React.Component {
     });
   }
 
+  generateNodesAndEdges = (): { nodes: Node[]; edges: Edge[] } => {
+    const { checkpoints } = this.state;
+    const nodes: Node[] = [];
+    const edges: Edge[] = [];
+    const visited = new Set<string>();
+    const firstCheckpoint = Object.values(this.state.checkpoints)[0];
+    const queue: QueueItem[] = [{
+      name: firstCheckpoint ? firstCheckpoint.name : 'A',
+      text: firstCheckpoint ? firstCheckpoint.text : 'Example text',
+      depth: 0
+    }];
+    const depthCount: { [key: number]: number } = {};
+
+    while (queue.length > 0) {
+      const { name, text, depth } = queue.shift() as QueueItem;
+      visited.add(name);
+
+      if (!depthCount[depth]) {
+        depthCount[depth] = 0;
+      }
+
+      nodes.push({
+        id: name,
+        position: { x: depthCount[depth] * 200, y: depth * 100 },
+        data: { label: text },
+      });
+
+      depthCount[depth]++;
+
+      if (checkpoints[name]) {
+        checkpoints[name].buttons.forEach(button => {
+          if (!visited.has(button.checkpoint)) {
+            let text
+            if (checkpoints[button.checkpoint]) {
+              text = checkpoints[button.checkpoint].text;
+            } else {
+              text = "Placeholder text";
+            }
+            queue.push({ name: button.checkpoint, depth: depth + 1, text: text});
+            edges.push({
+              id: `e${name}-${button.checkpoint}`,
+              source: name,
+              target: button.checkpoint,
+              label: button.text,
+            });
+          }
+        });
+      }
+    }
+
+    return { nodes, edges };
+  };
+
+  onNodesChange = (changes: any) => {
+    this.setState({ nodes: applyNodeChanges(changes, this.state.nds)});
+  }
+  onEdgesChange = (changes: any) => {
+    this.setState({ eds: applyEdgeChanges(changes, this.state.eds)});
+  }
+
   render(): React.ReactNode {
+    const { nodes, edges } = this.generateNodesAndEdges();
+
     return (
       <div className="flex flex-col items-center justify-center h-screen bg-zinc-950 dark:bg-white text-white">
         <motion.div
@@ -115,7 +220,20 @@ export default class DesignerPage extends React.Component {
         >
           <div className="flex flex-col items-center justify-center text-white">
             <div className="text-4xl font-bold">Designér příběhu</div>
-            <br /><br />
+            <br />
+            <div style={{ width: '75vw', height: '50vh' }}>
+            <ReactFlow
+              nodes={nodes}
+              onNodesChange={this.onNodesChange}
+              edges={edges}
+              onEdgesChange={this.onEdgesChange}
+              fitView
+            >
+              <Background />
+              <Controls />
+            </ReactFlow>
+            </div>
+            <br />
             <form onSubmit={this.handleFormSubmit}>
               <div className="text-2xl font-bold">Nový checkpoint</div>
               <br />
@@ -135,9 +253,9 @@ export default class DesignerPage extends React.Component {
             </form>
             <br />
             <div className="text-2xl font-bold">Checkpoints</div>
-            <textarea className="text-black w-full h-32" value={this.state.checkpointsText} onChange={this.handleCheckpointsChange} />
+            <textarea className="text-black w-full h-32" value={JSON.stringify(this.state.checkpoints)} onChange={this.handleCheckpointsChange} />
             <div className="text-2xl font-bold">Možné pokroky</div>
-            <textarea className="text-black w-full h-32" value={this.state.possibleProgressText} onChange={this.handlePossibleProgressChange} />
+            <textarea className="text-black w-full h-32" value={JSON.stringify(this.state.possibleProgress)} onChange={this.handlePossibleProgressChange} />
           </div>
         </motion.div>
       </div>
