@@ -3,9 +3,9 @@ import { sql } from "@vercel/postgres";
 
 const possibleProgress : {[key: string]:string[]} = {
   "A": ["B", "C", "D"],
-  "B": ["A", "C"],
-  "C": ["A", "B"],
-  "D": ["A"]
+  "B": ["A"],
+  "C": ["B", "D"],
+  "D": ["E", "X", "Y"]
 }
 
 export default async function POST(req: NextApiRequest, res: NextApiResponse) {

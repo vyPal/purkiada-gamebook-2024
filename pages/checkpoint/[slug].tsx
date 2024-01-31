@@ -11,54 +11,58 @@ const checkpoints : { [key: string]: { text: string, buttons: {
   checkpoint: string
 }[] } } = {
   "A": {
-    "text": "Nějaká část příběhu (A)",
+    "text": "Z kapitánského křesla na můstku lodi USS Sobek jsem sledoval monitor, na kterém se rozprostírala zpráva od admirála Janewayové. Její hlas zněl klidně, ale naléhavě, což vždy evokovalo důležitost situace.\n\"Stanice Deep Space 13 vyslala nouzový signál, jste nejbližší lodí Hvězdné flotily,\" informovala mě. \"Souřadnice vám posíláme.",
     "buttons": [
       {
-        "text": "Možnost B",
+        "text": "„Už jsme na cestě admirále!“",
+        "checkpoint": "D"
+      },
+      {
+        "text": "„Nemám zájem, čau“",
         "checkpoint": "B"
       },
       {
-        "text": "Možnost C",
+        "text": "Ukončit komunikaci a ignorovat příkaz",
         "checkpoint": "C"
-      },
-      {
-        "text": "Možnost D",
-        "checkpoint": "D"
       }
     ]
   },
   "B": {
-    "text": "Nějaká část příběhu (B)",
+    "text": "Stál jsem před polním soudem Hvězdné flotily, obklopený svými nadřízenými a dalšími členy posádky USS Sobek. Moje rozhodnutí ignorovat přímý rozkaz admirála Janewayové mělo vážné důsledky a teď jsem čelil následkům svých činů.",
     "buttons": [
       {
-        "text": "Možnost A",
+        "text": "Zkusit znovu",
         "checkpoint": "A"
-      },
-      {
-        "text": "Možnost C",
-        "checkpoint": "C"
       }
     ]
   },
   "C": {
-    "text": "Nějaká část příběhu (C)",
+    "text": "Bylo zřejmé, že moje rozhodnutí nebylo v souladu s Janewayovou představou o nejlepší akci. Její výraz byl nekompromisní, ale také chápavý. \"Jste povinni vyslechnout rozkaz,\" prohlásila nakonec, její hlas pevný, ale ne nepřátelský“\n\"Rozumím, admirále,\" odpověděl jsem respektovaně. \"Pokud budou naše současné povinnosti splněny nebo pokud se situace změní, budu ihned informovat a připravím se na vykonání příkazu.",
     "buttons": [
       {
-        "text": "Možnost A",
-        "checkpoint": "A"
+        "text": "„Dobrá, už jsme na cestě“",
+        "checkpoint": "D"
       },
       {
-        "text": "Možnost B",
+        "text": "Ukončit komunikaci a ignorovat příkaz",
         "checkpoint": "B"
       }
     ]
   },
   "D": {
-    "text": "Nějaká část příběhu (D)",
+    "text": "Stál jsem na můstku lodi USS Sobek, připravený na cestu, která ležela před námi. Měl jsem před sebou tři možnosti, jak se vydat k cíli, stanici Deep Space 13, a každá z nich nesla svá rizika a výhody.\nSeverní cestou: Tato trasa byla považována za bezpečnou, přestože se v této oblasti občas vyskytovaly meteorické bouře a gravitační anomálie. Většina lodí, které se v této oblasti pohybovaly, patřila k pakledským, což byly obvykle nebezpečné situace způsobené jejich nedostatkem technologického chápání. I když se v této oblasti nacházely jen zřídka jiné formy života nebo obchodní lodě, převažujícím nebezpečím zde byla nerozumná a nepředvídatelná chování pakledských lodí.\nKolem neutrální zóny: Tato trasa vedla kolem Neutrální zóny, což byla oblast mezi teritoriálními hranicemi Federace a Romulanského impéria. I když bychom se na této trase vyhnuli přímému konfliktu s Romulany, stále bychom museli být ostražití kvůli možnému porušení neutrality na straně Federace nebo Romulanů.\nPřes klingonské impérium: Tato trasa by byla nejrychlejší z těchto tří možností, ale také nejrizikovější. Přelet přes klingonské území by vyžadoval povolení a koordinaci s klingonskými autoritami. Existovalo riziko, že by nás mohli považovat za nepřátelskou hrozbu a podniknout proti nám opatření.\nS ohledem na tyto faktory jsem se obrátil na svou posádku a společně jsme zvážili všechny možnosti, abychom se rozhodli, kterou trasou se vydat.",
     "buttons": [
       {
-        "text": "Možnost A",
-        "checkpoint": "A"
+        "text": "Severní cestou",
+        "checkpoint": "E"
+      },
+      {
+        "text": "Kolem neutrální zóny",
+        "checkpoint": "X"
+      },
+      {
+        "text": "Přes klingonské impérium",
+        "checkpoint": "Y"
       }
     ]
   }
