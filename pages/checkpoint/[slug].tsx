@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/router'
 
 import "../../app/globals.css"
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const checkpoints : { [key: string]: { text: string, buttons: {
   text: string,
@@ -13,6 +13,12 @@ const checkpoints : { [key: string]: { text: string, buttons: {
  
 export default function Page() {
   const router = useRouter()
+  useEffect(() => {
+    history.pushState(null, '', router.asPath);
+    window.addEventListener('popstate', function (event) {
+        history.pushState(null, '', router.asPath);
+    });
+  }, [router.asPath]);
   const [verified, setVerified] = useState(false);
   const [cheater, setCheater] = useState(false);
   if (typeof window === 'undefined' || sessionStorage === undefined) {
