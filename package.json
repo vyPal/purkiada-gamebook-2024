@@ -18,6 +18,7 @@
     "@vercel/speed-insights": "^1.0.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "elkjs": "^0.9.1",
     "framer-motion": "^10.17.9",
     "next": "14.0.4",
     "react": "^18",

@@ -3,6 +3,7 @@ import "../../app/globals.css";
 import { motion } from 'framer-motion';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import ELK from 'elkjs/lib/elk.bundled.js';
 
 import ReactFlow, {
   Controls,
@@ -14,6 +15,7 @@ import ReactFlow, {
 } from 'reactflow';
  
 import 'reactflow/dist/style.css';
+const elk = new ELK();
  
 const initialNodes: Node[] = [
   { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
@@ -150,8 +152,8 @@ export default class DesignerPage extends React.Component {
 
   generateNodesAndEdges = (): { nodes: Node[]; edges: Edge[] } => {
     const { checkpoints } = this.state;
-    const nodes: Node[] = [];
-    const edges: Edge[] = [];
+    let nodes: any[] = [];
+    let edges: any[] = [];
     const visited = new Set<string>();
     const firstCheckpoint = Object.values(this.state.checkpoints)[0];
     const queue: QueueItem[] = [{
@@ -197,6 +199,29 @@ export default class DesignerPage extends React.Component {
         });
       }
     }
+
+    const defaultOptions = {
+      'elk.algorithm': 'layered',
+      'elk.layered.spacing.nodeNodeBetweenLayers': '100',
+      'elk.spacing.nodeNode': '80',
+    };
+
+    const graph = {
+      id: 'root',
+      layoutOptions: {...defaultOptions, ...{ 'elk.algorithm': 'layered', 'elk.direction': 'DOWN' }},
+      children: nodes,
+      edges: edges,
+    };
+
+    elk.layout(graph).then(({ children }:any) => {
+      // By mutating the children in-place we saves ourselves from creating a
+      // needless copy of the nodes array.
+      children.forEach((node:any) => {
+        node.position = { x: node.x, y: node.y };
+      });
+      
+      nodes = children;
+    });
 
     return { nodes, edges };
   };

@@ -1,12 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { sql } from "@vercel/postgres";
 
-const possibleProgress : {[key: string]:string[]} = {
-  "A": ["B", "C", "D"],
-  "B": ["A"],
-  "C": ["B", "D"],
-  "D": ["E", "X", "Y"]
-}
+const possibleProgress : {[key: string]:string[]} = {"A":["E","B","C"],"B":["A"],"C":["E","B"],"D":["E","X","Y"],"E":["F","B"],"F":["G","B"],"G":["I","H","J"],"H":["K","I"],"I":["L"],"J":["L"],"K":["L"],"L":["M","M"],"M":["N","X"],"N":["O","P"],"O":["T","U"],"P":["Q","S"],"Q":["S","R"],"R":[],"S":[],"T":[],"U":["T","V"],"V":["W","S"],"W":["Q","S"],"X":["N"]}
 
 export default async function POST(req: NextApiRequest, res: NextApiResponse) {
   const { username, password, ncp } = req.body
