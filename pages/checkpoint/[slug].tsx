@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 
 import "../../app/globals.css"
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 const checkpoints : { [key: string]: { text: string, buttons: {
   text: string,
@@ -37,8 +38,10 @@ export default function Page() {
   if (checkpoint === undefined) {
     return (
       <div className="flex flex-col items-center justify-center h-screen bg-zinc-950 dark:bg-white text-white">
-        <div className="text-4xl font-bold">404</div>
-        <div className="text-2xl">Stránka nenalezena</div>
+        <div className="text-4xl font-bold">Tuto část příběhu jsme nenašli</div>
+        <div className="text-2xl">Tohle by se nemělo stát, zkus se vrátit na <Link href={"/"}>domovní stránku</Link>.<br />
+        Pokud problém přetrvá, řekni někomu z organizátorů.
+        </div>
       </div>
     )
   }
@@ -83,7 +86,7 @@ export default function Page() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-zinc-950 dark:bg-white text-white">
+    <div className="flex flex-col items-center justify-center h-screen bg-zinc-950 dark:bg-white text-white p-32">
       <div className="text-4xl font-bold">{checkpoint.text}</div>
       {checkpoint.buttons.map((button) => (
         <Button key={button.checkpoint} onClick={() => tryProgress(button.checkpoint)} className="bg-zinc-900 hover:bg-zinc-800 text-white font-bold py-2 px-4 rounded mt-4">{button.text}</Button>
