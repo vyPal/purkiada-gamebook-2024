@@ -11,7 +11,7 @@ const HomePage = () => {
 
   useEffect(() => {
     controls.start({ opacity: 1 });
-    const targetDate = new Date("2024-02-27T14:12:00+01:00"); // TODO nastavit správný čas
+    const targetDate = new Date("2024-02-15T08:55:00+01:00"); // TODO nastavit správný čas
     const currentDate = new Date();
 
     if (currentDate >= targetDate) {
