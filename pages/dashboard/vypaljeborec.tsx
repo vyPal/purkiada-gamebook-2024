@@ -4,7 +4,7 @@ import { GrTest, GrMonitor } from "react-icons/gr"
 
 export default function Page({ data, error } : { data: QueryResult<QueryResultRow>, error: Error }) {
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-zinc-950 dark:bg-white text-white">
+    <div className="flex flex-col items-center justify-center bg-zinc-950 dark:bg-white text-white">
       {data.rows.map(row => 
         <div key={row.username}>
           {row.type == "test" ? <GrTest style={{"display": "inline"}}/> : <GrMonitor style={{"display": "inline"}}/>}
