@@ -91,7 +91,7 @@ export default function Page() {
       {checkpoint.buttons.map((button) => (
         <Button key={button.checkpoint} onClick={() => tryProgress(button.checkpoint)} className="bg-zinc-900 hover:bg-zinc-800 text-white font-bold py-2 px-4 rounded mt-4">{button.text}</Button>
       ))}
-      {checkpoint.buttons.length === 0 ? <p className="bg-zinc-900 hover:bg-zinc-800 text-white font-bold py-2 px-4 rounded mt-4">Konec</p> : null}
+      {checkpoint.buttons.length === 0 ? <Button onClick={() => router.push("/")} className="bg-zinc-900 hover:bg-zinc-800 text-white font-bold py-2 px-4 rounded mt-4">Konec</Button> : null}
     </div>
   )
 }
