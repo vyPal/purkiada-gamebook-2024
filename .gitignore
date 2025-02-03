@@ -37,3 +37,5 @@ next-env.d.ts
 
 data.py
 data.xlsx
+
+.env
