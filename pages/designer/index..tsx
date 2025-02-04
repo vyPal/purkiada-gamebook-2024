@@ -1,9 +1,9 @@
 import React, { ChangeEvent, FormEvent } from "react";
 import "../../app/globals.css";
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import ELK from 'elkjs/lib/elk.bundled.js';
+import ELK from "elkjs/lib/elk.bundled.js";
 
 import ReactFlow, {
   Controls,
@@ -12,25 +12,36 @@ import ReactFlow, {
   applyEdgeChanges,
   Node,
   Edge,
-} from 'reactflow';
- 
-import 'reactflow/dist/style.css';
+} from "reactflow";
+
+import "reactflow/dist/style.css";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 const elk = new ELK();
- 
+
 const initialNodes: Node[] = [
-  { id: '1', position: { x: 0, y: 0 }, data: { label: '1' } },
-  { id: '2', position: { x: 0, y: 100 }, data: { label: '2' } },
+  { id: "1", position: { x: 0, y: 0 }, data: { label: "1" } },
+  { id: "2", position: { x: 0, y: 100 }, data: { label: "2" } },
 ];
-const initialEdges: Edge[] = [{ id: 'e1-2', source: '1', target: '2', label: 'e1-2'}];
+const initialEdges: Edge[] = [
+  { id: "e1-2", source: "1", target: "2", label: "e1-2" },
+];
 
 interface ButtonData {
   text: string;
+  placeholder: string;
   checkpoint: string;
 }
 
 interface Checkpoint {
   name: string;
   text: string;
+  type: string;
   buttons: ButtonData[];
 }
 
@@ -42,6 +53,7 @@ interface State {
   newCheckpointName: string;
   newCheckpointText: string;
   newButtons: ButtonData[];
+  checkpointType: string;
   nds: Node[];
   eds: Edge[];
 }
@@ -60,7 +72,8 @@ export default class DesignerPage extends React.Component {
     possibleProgressText: "",
     newCheckpointName: "",
     newCheckpointText: "",
-    newButtons: [{ text: "", checkpoint: "" }],
+    newButtons: [{ text: "", checkpoint: "", placeholder: "" }],
+    checkpointType: "choice",
     nds: initialNodes,
     eds: initialEdges,
   };
@@ -68,13 +81,17 @@ export default class DesignerPage extends React.Component {
   constructor(props: React.PropsWithChildren) {
     super(props);
     this.handleCheckpointsChange = this.handleCheckpointsChange.bind(this);
-    this.handlePossibleProgressChange = this.handlePossibleProgressChange.bind(this);
+    this.handlePossibleProgressChange =
+      this.handlePossibleProgressChange.bind(this);
     this.generateNodesAndEdges = this.generateNodesAndEdges.bind(this);
     this.onNodesChange = this.onNodesChange.bind(this);
     this.onEdgesChange = this.onEdgesChange.bind(this);
   }
 
-  handleButtonChange = (event: ChangeEvent<HTMLInputElement>, index: number) => {
+  handleButtonChange = (
+    event: ChangeEvent<HTMLInputElement>,
+    index: number,
+  ) => {
     const newButtons = [...this.state.newButtons];
     const { name, value } = event.target;
     newButtons[index][name as keyof ButtonData] = value;
@@ -85,10 +102,13 @@ export default class DesignerPage extends React.Component {
     const { name, value } = event.target;
     this.setState({ [name as keyof State]: value });
   };
-  
+
   handleAddButton = () => {
     this.setState((prevState: State) => ({
-      newButtons: [...prevState.newButtons, { text: "", checkpoint: "" }],
+      newButtons: [
+        ...prevState.newButtons,
+        { text: "", checkpoint: "", placeholder: "" },
+      ],
     }));
   };
 
@@ -101,26 +121,36 @@ export default class DesignerPage extends React.Component {
   handleFormSubmit = (event: FormEvent) => {
     event.preventDefault();
 
-    const { newCheckpointName, newCheckpointText, newButtons } = this.state;
+    const { newCheckpointName, newCheckpointText, newButtons, checkpointType } =
+      this.state;
 
     // Create a deep copy of newButtons
-    const copiedButtons = newButtons.map(button => ({ ...button }));
+    const copiedButtons = newButtons.map((button) => ({ ...button }));
 
     const newCheckpoint: Checkpoint = {
       text: newCheckpointText,
       buttons: copiedButtons,
+      type: checkpointType,
       name: newCheckpointName,
     };
 
-    const newPossibleProgress = copiedButtons.map(button => button.checkpoint);
+    const newPossibleProgress = copiedButtons.map(
+      (button) => button.checkpoint,
+    );
 
     this.setState((prevState: State) => ({
-      checkpoints: { ...prevState.checkpoints, [newCheckpointName]: newCheckpoint },
-      possibleProgress: { ...prevState.possibleProgress, [newCheckpointName]: newPossibleProgress },
+      checkpoints: {
+        ...prevState.checkpoints,
+        [newCheckpointName]: newCheckpoint,
+      },
+      possibleProgress: {
+        ...prevState.possibleProgress,
+        [newCheckpointName]: newPossibleProgress,
+      },
       // Reset form
       newCheckpointName: "",
       newCheckpointText: "",
-      newButtons: [{ text: "", checkpoint: "" }],
+      newButtons: [{ text: "", checkpoint: "", placeholder: "" }],
     }));
   };
 
@@ -129,11 +159,16 @@ export default class DesignerPage extends React.Component {
     let newPossibleProgress = this.state.possibleProgress;
 
     if (Object.keys(newPossibleProgress).length === 0 && newCheckpoints) {
-      newPossibleProgress = Object.keys(newCheckpoints).reduce((acc, checkpointName) => {
-        const checkpoint = newCheckpoints[checkpointName];
-        acc[checkpointName] = checkpoint.buttons.map((button: ButtonData) => button.checkpoint);
-        return acc;
-      }, {} as { [key: string]: string[] });
+      newPossibleProgress = Object.keys(newCheckpoints).reduce(
+        (acc, checkpointName) => {
+          const checkpoint = newCheckpoints[checkpointName];
+          acc[checkpointName] = checkpoint.buttons.map(
+            (button: ButtonData) => button.checkpoint,
+          );
+          return acc;
+        },
+        {} as { [key: string]: string[] },
+      );
     }
 
     this.setState({
@@ -156,11 +191,13 @@ export default class DesignerPage extends React.Component {
     let edges: any[] = [];
     const visited = new Set<string>();
     const firstCheckpoint = Object.values(this.state.checkpoints)[0];
-    const queue: QueueItem[] = [{
-      name: firstCheckpoint ? firstCheckpoint.name : 'A',
-      text: firstCheckpoint ? firstCheckpoint.text : 'Example text',
-      depth: 0
-    }];
+    const queue: QueueItem[] = [
+      {
+        name: firstCheckpoint ? firstCheckpoint.name : "A",
+        text: firstCheckpoint ? firstCheckpoint.text : "Example text",
+        depth: 0,
+      },
+    ];
     const depthCount: { [key: number]: number } = {};
 
     while (queue.length > 0) {
@@ -180,15 +217,19 @@ export default class DesignerPage extends React.Component {
       depthCount[depth]++;
 
       if (checkpoints[name]) {
-        checkpoints[name].buttons.forEach(button => {
+        checkpoints[name].buttons.forEach((button) => {
           if (!visited.has(button.checkpoint)) {
-            let text
+            let text;
             if (checkpoints[button.checkpoint]) {
               text = checkpoints[button.checkpoint].text;
             } else {
               text = "Placeholder text";
             }
-            queue.push({ name: button.checkpoint, depth: depth + 1, text: text});
+            queue.push({
+              name: button.checkpoint,
+              depth: depth + 1,
+              text: text,
+            });
             edges.push({
               id: `e${name}-${button.checkpoint}`,
               source: name,
@@ -201,25 +242,28 @@ export default class DesignerPage extends React.Component {
     }
 
     const defaultOptions = {
-      'elk.algorithm': 'layered',
-      'elk.layered.spacing.nodeNodeBetweenLayers': '100',
-      'elk.spacing.nodeNode': '80',
+      "elk.algorithm": "layered",
+      "elk.layered.spacing.nodeNodeBetweenLayers": "100",
+      "elk.spacing.nodeNode": "80",
     };
 
     const graph = {
-      id: 'root',
-      layoutOptions: {...defaultOptions, ...{ 'elk.algorithm': 'layered', 'elk.direction': 'DOWN' }},
+      id: "root",
+      layoutOptions: {
+        ...defaultOptions,
+        ...{ "elk.algorithm": "layered", "elk.direction": "DOWN" },
+      },
       children: nodes,
       edges: edges,
     };
 
-    elk.layout(graph).then(({ children }:any) => {
+    elk.layout(graph).then(({ children }: any) => {
       // By mutating the children in-place we saves ourselves from creating a
       // needless copy of the nodes array.
-      children.forEach((node:any) => {
+      children.forEach((node: any) => {
         node.position = { x: node.x, y: node.y };
       });
-      
+
       nodes = children;
     });
 
@@ -227,11 +271,15 @@ export default class DesignerPage extends React.Component {
   };
 
   onNodesChange = (changes: any) => {
-    this.setState({ nodes: applyNodeChanges(changes, this.state.nds)});
-  }
+    this.setState({ nodes: applyNodeChanges(changes, this.state.nds) });
+  };
   onEdgesChange = (changes: any) => {
-    this.setState({ eds: applyEdgeChanges(changes, this.state.eds)});
-  }
+    this.setState({ eds: applyEdgeChanges(changes, this.state.eds) });
+  };
+
+  onTypeValueChange = (newvalue: string) => {
+    this.setState({ checkpointType: newvalue });
+  };
 
   render(): React.ReactNode {
     const { nodes, edges } = this.generateNodesAndEdges();
@@ -246,41 +294,98 @@ export default class DesignerPage extends React.Component {
           <div className="flex flex-col items-center justify-center text-white">
             <div className="text-4xl font-bold">Designér příběhu</div>
             <br />
-            <div style={{ width: '75vw', height: '50vh' }}>
-            <ReactFlow
-              nodes={nodes}
-              onNodesChange={this.onNodesChange}
-              edges={edges}
-              onEdgesChange={this.onEdgesChange}
-              fitView
-            >
-              <Background />
-              <Controls />
-            </ReactFlow>
+            <div style={{ width: "75vw", height: "50vh" }}>
+              <ReactFlow
+                nodes={nodes}
+                onNodesChange={this.onNodesChange}
+                edges={edges}
+                onEdgesChange={this.onEdgesChange}
+                fitView
+              >
+                <Background />
+                <Controls />
+              </ReactFlow>
             </div>
             <br />
             <form onSubmit={this.handleFormSubmit}>
               <div className="text-2xl font-bold">Nový checkpoint</div>
               <br />
               <div className="flex space-x-4">
-                <Input name="newCheckpointName" value={this.state.newCheckpointName} onChange={this.handleInputChange} placeholder="Checkpoint Name" />
-                <Input name="newCheckpointText" value={this.state.newCheckpointText} onChange={this.handleInputChange} placeholder="Checkpoint Text" />
+                <Input
+                  name="newCheckpointName"
+                  value={this.state.newCheckpointName}
+                  onChange={this.handleInputChange}
+                  placeholder="Checkpoint Name"
+                />
+                <Select
+                  onValueChange={this.onTypeValueChange}
+                  defaultValue="choice"
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="choice">Choice</SelectItem>
+                    <SelectItem value="input">Input</SelectItem>
+                    <SelectItem value="title">Title</SelectItem>
+                    <SelectItem value="end">End</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex space-x-4">
+                <Input
+                  name="newCheckpointText"
+                  value={this.state.newCheckpointText}
+                  onChange={this.handleInputChange}
+                  placeholder="Checkpoint Text"
+                />
               </div>
               {this.state.newButtons.map((button, index) => (
                 <div key={index} className="flex space-x-4">
-                  <Input name="text" value={button.text} onChange={(event) => this.handleButtonChange(event, index)} placeholder="Button Text" />
-                  <Input name="checkpoint" value={button.checkpoint} onChange={(event) => this.handleButtonChange(event, index)} placeholder="Button Checkpoint" />
-                  <Button type="button" onClick={() => this.handleRemoveButton(index)}>Remove Button</Button>
+                  <Input
+                    name="text"
+                    value={button.text}
+                    onChange={(event) => this.handleButtonChange(event, index)}
+                    placeholder="Button Text"
+                  />
+                  <Input
+                    name="placeholder"
+                    value={button.placeholder}
+                    onChange={(event) => this.handleButtonChange(event, index)}
+                    placeholder="Input Placeholder"
+                  />
+                  <Input
+                    name="checkpoint"
+                    value={button.checkpoint}
+                    onChange={(event) => this.handleButtonChange(event, index)}
+                    placeholder="Button Checkpoint"
+                  />
+                  <Button
+                    type="button"
+                    onClick={() => this.handleRemoveButton(index)}
+                  >
+                    Remove Button
+                  </Button>
                 </div>
               ))}
-              <Button type="button" onClick={this.handleAddButton}>Add Button</Button>
+              <Button type="button" onClick={this.handleAddButton}>
+                Add Button
+              </Button>
               <Button type="submit">Add Checkpoint</Button>
             </form>
             <br />
             <div className="text-2xl font-bold">Checkpoints</div>
-            <textarea className="text-black w-full h-32" value={JSON.stringify(this.state.checkpoints)} onChange={this.handleCheckpointsChange} />
+            <textarea
+              className="text-black w-full h-32"
+              value={JSON.stringify(this.state.checkpoints)}
+              onChange={this.handleCheckpointsChange}
+            />
             <div className="text-2xl font-bold">Možné pokroky</div>
-            <textarea className="text-black w-full h-32" value={JSON.stringify(this.state.possibleProgress)} onChange={this.handlePossibleProgressChange} />
+            <textarea
+              className="text-black w-full h-32"
+              value={JSON.stringify(this.state.possibleProgress)}
+              onChange={this.handlePossibleProgressChange}
+            />
           </div>
         </motion.div>
       </div>
