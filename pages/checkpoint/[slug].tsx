@@ -265,12 +265,6 @@ const checkpoints: {
         checkpoint: "1a",
       },
       {
-        text: "2, 6, 18, 54, 162, 480, 1440",
-        beforeInput: "",
-        placeholder: "",
-        checkpoint: "1a",
-      },
-      {
         text: "2, 6, 12, 36, 108, 324, 972",
         beforeInput: "",
         placeholder: "",
@@ -293,17 +287,17 @@ const checkpoints: {
     name: "Vyhazov",
   },
   "2": {
-    text: "Úspěšně jsi prošel přes turniket, teď nachází těžší úkol, vyjít schody.",
+    text: "Úspěšně jsi prošel přes turniket, teď nachází těžší úkol, vyjít schody. Doplň: The ________ believes in strong ________.",
     type: "choice",
     buttons: [
       {
-        text: "Everyone ______ Peter came on time.",
+        text: "principal, principles",
         beforeInput: "",
         placeholder: "",
         checkpoint: "3",
       },
       {
-        text: "Everyone principal Peter came on time.",
+        text: "principle, principals",
         beforeInput: "",
         placeholder: "",
         checkpoint: "2a",
@@ -325,7 +319,7 @@ const checkpoints: {
     name: "Pád",
   },
   "3": {
-    text: "Dobrá práce, vejdi do třídy a představ se paní uřitelce.",
+    text: "Dobrá práce, vejdi do třídy a představ se paní uřitelce. Kolik je 19 na druhou?",
     type: "choice",
     buttons: [
       {
@@ -400,7 +394,7 @@ const checkpoints: {
     name: "Výběr kamaráda",
   },
   "5": {
-    text: "Určitě se s ním skamarádíš, ale zdá se, že má pro tebe hádanku.",
+    text: "Určitě se s ním skamarádíš, ale zdá se, že má pro tebe hádanku. Kolik je 7 * 8",
     type: "choice",
     buttons: [
       {
@@ -444,7 +438,7 @@ const checkpoints: {
     name: "Výsměch LoL hráče",
   },
   "6": {
-    text: "Spolužačka se usmívá, zdá se, že má pro tebe uměleckou otázku.",
+    text: "Spolužačka se usmívá, zdá se, že má pro tebe uměleckou otázku. Jaká barva vznikne smícháním modré a žluté?",
     type: "choice",
     buttons: [
       {
@@ -488,7 +482,7 @@ const checkpoints: {
     name: "Zamračení",
   },
   "7": {
-    text: "Zdá se, že programátor má pro tebe logickou hádanku.",
+    text: "Zdá se, že programátor má pro tebe logickou hádanku. Co je vždycky před tebou, ale nikdy ho nedohoníš?",
     type: "choice",
     buttons: [
       {
@@ -532,7 +526,7 @@ const checkpoints: {
     name: "Ignorace",
   },
   "8": {
-    text: "Spolužačka se usmívá, vypadá, že má pro tebe otázku z umělé inteligence. Ale možná je to jen hádanka.",
+    text: "Spolužačka se usmívá, vypadá, že má pro tebe otázku z umělé inteligence. Ale možná je to jen hádanka. Co je to: čím víc toho ubývá, tím je to větší?",
     type: "choice",
     buttons: [
       {
@@ -576,7 +570,7 @@ const checkpoints: {
     name: "Zpět ke knize",
   },
   "9": {
-    text: "Skvělé, přežil jsi konverzaci s League of Legends hráčem, teď musíš přežít hodinu.",
+    text: 'Skvělé, přežil jsi konverzaci s League of Legends hráčem, teď musíš přežít hodinu. Vyber správné slovo pro větu: "Everyone ______ Peter came on time."',
     type: "choice",
     buttons: [
       {
@@ -620,7 +614,7 @@ const checkpoints: {
     name: "Vyhození z hodiny",
   },
   "10": {
-    text: "Hodina utekla jako voda, je přestávka, co budeš dělat?",
+    text: "Hodina utekla jako voda, je přestávka, co budeš dělat? Jaké je hlavní město Slovenska?",
     type: "choice",
     buttons: [
       {
@@ -664,7 +658,7 @@ const checkpoints: {
     name: "Polití kalhot",
   },
   "11": {
-    text: "Přestávka je za tebou, jdeš na oběd?",
+    text: "Přestávka je za tebou, jdeš na oběd? Kolik je 15 * 15?",
     type: "choice",
     buttons: [
       {
@@ -708,7 +702,7 @@ const checkpoints: {
     name: "Omdlení",
   },
   "12": {
-    text: "Oběd byl fajn, zbývá už jen konec školy.",
+    text: "Oběd byl fajn, zbývá už jen konec školy. Co má město, hory i vodu, ale žádné domy, stromy ani ryby?",
     type: "choice",
     buttons: [
       {
@@ -758,7 +752,7 @@ const checkpoints: {
     name: "Konec",
   },
   "14": {
-    text: "Správně, uměleckou otázku jsi zvládl, teď musíš přežít hodinu matematiky.",
+    text: "Správně, uměleckou otázku jsi zvládl, teď musíš přežít hodinu matematiky. Kolik je 12 * 12?",
     type: "choice",
     buttons: [
       {
@@ -802,7 +796,7 @@ const checkpoints: {
     name: "Pětka",
   },
   "15": {
-    text: "Matematika byla nuda, ale přežil jsi, je přestávka, co děláš?",
+    text: "Matematika byla nuda, ale přežil jsi, je přestávka, co děláš? Jaké je hlavní město Německa?",
     type: "choice",
     buttons: [
       {
@@ -846,7 +840,7 @@ const checkpoints: {
     name: "Ředitel",
   },
   "16": {
-    text: "Přestávka s ředitelem se obešla bez následků, jdeš na oběd?",
+    text: "Přestávka s ředitelem se obešla bez následků, jdeš na oběd? Co má krk, ale nemá hlavu?",
     type: "choice",
     buttons: [
       {
@@ -890,7 +884,7 @@ const checkpoints: {
     name: "Kuchařka",
   },
   "17": {
-    text: "Oběd se obešel bez karambolu, už jen přežít cestu domů.",
+    text: 'Oběd se obešel bez karambolu, už jen přežít cestu domů. Vyber správné slovo pro větu: "______ car is new"',
     type: "choice",
     buttons: [
       {
@@ -940,7 +934,7 @@ const checkpoints: {
     name: "Konec",
   },
   "19": {
-    text: "Logickou hádanku jsi zvládl, teď tě čeká hodina fyziky.",
+    text: "Logickou hádanku jsi zvládl, teď tě čeká hodina fyziky. Kolik je 20 * 20?",
     type: "choice",
     buttons: [
       {
@@ -984,7 +978,7 @@ const checkpoints: {
     name: "Pád ze židle",
   },
   "20": {
-    text: "Fyzika tě nezabila, je přestávka, co podnikneš?",
+    text: "Fyzika tě nezabila, je přestávka, co podnikneš? Jaké je hlavní město Rakouska?",
     type: "choice",
     buttons: [
       {
@@ -1028,7 +1022,7 @@ const checkpoints: {
     name: "Zlomená noha",
   },
   "21": {
-    text: "Parkour nebyl tvůj silný obor, ale přestávku jsi přežil, jdeš na oběd?",
+    text: "Parkour nebyl tvůj silný obor, ale přestávku jsi přežil, jdeš na oběd? Co je lehčí než peří, ale nikdo ho dlouho neudrží?",
     type: "choice",
     buttons: [
       {
@@ -1072,7 +1066,7 @@ const checkpoints: {
     name: "Vynadání",
   },
   "22": {
-    text: "Oběd bez problémů, už jen přežít cestu ze školy.",
+    text: 'Oběd bez problémů, už jen přežít cestu ze školy. Vyber správné slovo pro větu: "I want to go ______."',
     type: "choice",
     buttons: [
       {
@@ -1122,7 +1116,7 @@ const checkpoints: {
     name: "Konec",
   },
   "24": {
-    text: "Hádanku jsi vyřešil, teď tě čeká hodina chemie.",
+    text: "Hádanku jsi vyřešil, teď tě čeká hodina chemie. Kolik je 11 * 11?",
     type: "choice",
     buttons: [
       {
@@ -1166,7 +1160,7 @@ const checkpoints: {
     name: "Výbuch",
   },
   "25": {
-    text: "Chemie tě nezabila, ale málem, je přestávka, co podnikáš?",
+    text: "Chemie tě nezabila, ale málem, je přestávka, co podnikáš? Jaké je hlavní město Polska?",
     type: "choice",
     buttons: [
       {
@@ -1210,7 +1204,7 @@ const checkpoints: {
     name: "Požární alarm",
   },
   "26": {
-    text: "Požární alarm se naštěstí nespustil, jdeš na oběd?",
+    text: "Požární alarm se naštěstí nespustil, jdeš na oběd? Co má zuby, ale nekouše?",
     type: "choice",
     buttons: [
       {
@@ -1254,7 +1248,7 @@ const checkpoints: {
     name: "Pěstí",
   },
   "27": {
-    text: "Oběd bez rvačky, zbývá jen cesta domů.",
+    text: 'Oběd bez rvačky, zbývá jen cesta domů. Vyber správné slovo pro větu: "I am standing ______ you."',
     type: "choice",
     buttons: [
       {
