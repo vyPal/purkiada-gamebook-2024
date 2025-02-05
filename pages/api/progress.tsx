@@ -71,7 +71,7 @@ export default async function POST(req: NextApiRequest, res: NextApiResponse) {
           username.startsWith("test")
         ) {
           checkpoint = ncp;
-          history.push(ncp);
+          history.push({ checkpoint: ncp, time: new Date() });
         } else {
           return res.status(400).json({
             message:
