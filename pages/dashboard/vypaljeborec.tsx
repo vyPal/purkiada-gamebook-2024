@@ -9,6 +9,58 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
+function calculateScore(row: QueryResultRow) {
+  let score = 0;
+
+  // Base points for finishing the game
+  if (["13", "18", "23", "28"].includes(row.checkpoint)) {
+    score += 30;
+  }
+
+  // Deduct points for resets, but with a smaller penalty
+  const resets = row.history.filter((c: any) =>
+    typeof c == "string" ? false : c.checkpoint == "0",
+  ).length;
+  score -= resets * 4;
+
+  // Points for progression (unique checkpoints visited)
+  const uniqueCheckpoints = new Set(
+    row.history
+      .filter((c: any) => typeof c != "string")
+      .map((c: any) => c.checkpoint),
+  );
+  score += uniqueCheckpoints.size;
+
+  // Time factor (less aggressive penalties)
+  const startTime = new Date(
+    row.history.filter(
+      (c: any) => typeof c != "string" && c.time != null,
+    )[0]?.time,
+  );
+  const endTime = new Date(
+    row.history
+      .filter((c: any) => typeof c != "string" && c.time != null)
+      .at(-1)?.time,
+  );
+  const timeSpent = endTime.getTime() - startTime.getTime();
+  const timeInMinutes = timeSpent / (1000 * 60);
+
+  // Adjusted time scoring
+  if (timeInMinutes < 15) {
+    score -= 10; // Smaller penalty for speed
+  } else if (timeInMinutes > 120) {
+    // Extended time limit to 2 hours
+    score -= Math.min(15, (timeInMinutes - 120) / 15); // Much gentler penalty
+  } else if (timeInMinutes >= 15 && timeInMinutes <= 60) {
+    score += 10; // Bonus for optimal time range
+  }
+
+  // Normalize score to 1-10 scale
+  let normalizedScore = Math.round(((score - 0) / (50 - 0)) * 9 + 1);
+  // Ensure score stays within 1-10 range
+  return Math.max(1, Math.min(10, normalizedScore));
+}
+
 export default function Page({
   data,
   error,
@@ -77,14 +129,19 @@ export default function Page({
             !(noTest && row.type == "test") &&
             !(noEmpty && row.history.length == 1),
         )
-        .map((row) => (
+        .map((row) => ({
+          ...row,
+          score: calculateScore(row),
+        }))
+        .sort((a, b) => b.score - a.score)
+        .map((row: any) => (
           <RenderRow key={row.username} {...row} />
         ))}
     </div>
   );
 }
 
-function RenderRow(row: QueryResultRow) {
+function RenderRow(row: QueryResultRow & { score: number }) {
   let [open, setOpen] = useState(false);
   let startTime = new Date(
     row.history.filter(
@@ -108,8 +165,8 @@ function RenderRow(row: QueryResultRow) {
               <GrMonitor style={{ display: "inline" }} />
             )}
             <p style={{ display: "inline" }}>
-              &nbsp;{row.username} is at PC {row.pc} on checkpoint{" "}
-              {row.checkpoint}
+              &nbsp;{row.username} (Score: {row.score}) is at PC {row.pc} on
+              checkpoint {row.checkpoint}
             </p>
           </Button>
         </CollapsibleTrigger>
